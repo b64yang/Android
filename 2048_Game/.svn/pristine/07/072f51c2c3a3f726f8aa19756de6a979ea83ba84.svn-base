@@ -1,0 +1,179 @@
+package uwaterloo.ca.lab3_203_08;
+
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+import android.widget.ImageView;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+/**
+ * Created by AHA-Admin on 6/26/2017.
+ */
+
+public class GameBlock extends ImageView {
+
+    private final float IMAGE_SCALE = 0.55f;
+
+    private int coordX;
+    private int coordY;
+
+    final int VELO_INIT = 0;
+    private int velocity = VELO_INIT;
+    final int ACCELERATION = 1;
+
+    private final int UPPER_BOUND = 675;
+    private final int LOWER_BOUND = -70;
+
+    private boolean inMotion = false;
+
+    private GameLoopTask.GameDirection myDir;
+
+    public GameBlock(Context myContext, int inCoordX, int inCoordY) {
+        super(myContext);
+        coordX = inCoordX;
+        coordY = inCoordY;
+
+        this.setImageResource(R.drawable.gameblock);
+        this.setX(inCoordX);
+        this.setY(inCoordY);
+        this.setScaleX(IMAGE_SCALE);
+        this.setScaleY(IMAGE_SCALE);
+
+    }
+
+    public void setBlockDirection(GameLoopTask.GameDirection newDir) {
+        myDir = newDir;
+    }
+
+    public void move(final Activity myActivity) {
+        if(myDir == null) {
+            Log.d("NULL:", "no myDir");
+            return;
+        }
+
+//        switch(myDir) {
+//            case RIGHT:
+//                this.setX(UPPER_BOUND);
+//                Log.d("Where:", "right");
+//                break;
+//            case LEFT:
+//                this.setX(LOWER_BOUND);
+//                Log.d("Where:", "left");
+//                break;
+//            case UP:
+//                this.setY(LOWER_BOUND);
+//                Log.d("Where:", "up");
+//                break;
+//            case DOWN:
+//                this.setY(UPPER_BOUND);
+//                Log.d("Where:", "down");
+//                break;
+//            case NO_MOVEMENT:
+//                break;
+//        }
+
+        final GameBlock passThis = this;
+
+        final Timer animeTimer = new Timer();
+
+        TimerTask animeTask = new TimerTask() {
+            public void run() {
+                myActivity.runOnUiThread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            switch (myDir) {
+
+                                case RIGHT:
+                                    if (coordX <= UPPER_BOUND) {
+                                        coordX += velocity;
+                                        velocity += ACCELERATION;
+                                        passThis.setX(coordX);
+                                        Log.d("Where:", Integer.toString(coordX));
+                                    } else {
+                                        coordX = UPPER_BOUND;
+                                        velocity = VELO_INIT;
+                                        passThis.setX(UPPER_BOUND);
+                                        animeTimer.cancel();
+                                        Log.d("Where:", Integer.toString(coordX));
+                                    }
+                                    //Log.d("Where:", "right");
+                                    break;
+                                case LEFT:
+                                    if (coordX >= LOWER_BOUND) {
+                                        coordX -= velocity;
+                                        velocity += ACCELERATION;
+                                        passThis.setX(coordX);
+                                        Log.d("Where:", Integer.toString(coordX));
+                                    } else {
+                                        coordX = LOWER_BOUND;
+                                        velocity = VELO_INIT;
+                                        passThis.setX(LOWER_BOUND);
+                                        animeTimer.cancel();
+                                        Log.d("Where:", Integer.toString(coordX));
+                                    }
+                                    //Log.d("Where:", "left");
+                                    break;
+                                case UP:
+                                    if (coordY >= LOWER_BOUND) {
+                                        coordY -= velocity;
+                                        velocity += ACCELERATION;
+                                        passThis.setY(coordY);
+                                        Log.d("Where:", Integer.toString(coordY) + "Y");
+                                    } else {
+                                        coordY = LOWER_BOUND;
+                                        velocity = VELO_INIT;
+                                        passThis.setY(LOWER_BOUND);
+                                        animeTimer.cancel();
+                                        Log.d("Where:", Integer.toString(coordY) + "Y");
+                                    }
+                                    //Log.d("Where:", "up");
+                                    break;
+                                case DOWN:
+                                    if (coordY <= UPPER_BOUND) {
+                                        coordY += velocity;
+                                        velocity += ACCELERATION;
+                                        passThis.setY(coordY);
+                                        Log.d("Where:", Integer.toString(coordY) + "Y");
+                                    } else {
+                                        coordY = UPPER_BOUND;
+                                        velocity = VELO_INIT;
+                                        passThis.setY(UPPER_BOUND);
+                                        animeTimer.cancel();
+                                        Log.d("Where:", Integer.toString(coordY) + "Y");
+                                    }
+
+                                    break;
+                                case NO_MOVEMENT:
+                                    animeTimer.cancel();
+                                    break;
+                                default:
+                                    animeTimer.cancel();
+                                    break;
+                            }
+                        }
+                    }
+                );
+                //Log.d("What:", Integer.toString(velocity));
+
+            }
+        };
+
+        animeTimer.schedule(animeTask, 0, 16);
+    }
+
+//    public void animation(int target, final GameLoopTask.GameDirection direction) {
+//
+//        int velocityInit = 1;
+//        final int acceleration = 1;
+//
+//        TimerTask animeTask = new TimerTask() {
+//            public void run() {
+//                if(direction == GameLoopTask.GameDirection.RIGHT)
+//            }
+//        };
+//    }
+
+}

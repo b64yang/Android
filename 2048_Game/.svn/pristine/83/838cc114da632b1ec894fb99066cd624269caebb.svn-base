@@ -1,0 +1,68 @@
+package uwaterloo.ca.lab3_203_08;
+
+/**
+ * Created by AHA-Admin on 6/26/2017.
+ */
+
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+import android.widget.RelativeLayout;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class GameLoopTask extends TimerTask{
+
+    public enum GameDirection {
+        UP,
+        DOWN,
+        RIGHT,
+        LEFT,
+        NO_MOVEMENT
+    };
+
+    public GameDirection currentGameDirection = GameDirection.NO_MOVEMENT;
+
+    private Activity activity;
+    private RelativeLayout rl;
+    private Context context;
+    private GameBlock block;
+    
+    private int seconds = 0;
+
+    public GameLoopTask(Activity myActivity, RelativeLayout myRL, Context myContext) {
+
+        activity = myActivity;
+        rl = myRL;
+        context = myContext;
+
+        createBlock();
+    }
+
+    public void run() {
+        activity.runOnUiThread(
+            new Runnable() {
+                @Override
+                public void run() {
+                    block.move(activity);
+                    Log.d("SYS:", "Al");
+                }
+            }
+        );
+    }
+
+    public GameDirection setDirection(GameDirection newDirection) {
+        currentGameDirection = newDirection;
+        Log.d("DIR:", Integer.toString(currentGameDirection.ordinal()));
+        block.setBlockDirection(currentGameDirection);
+        return currentGameDirection;
+    }
+
+    private void createBlock() {
+
+        block = new GameBlock(context, -70, -70);
+        rl.addView(block);
+
+    }
+}
