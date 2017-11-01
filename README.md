@@ -5,3 +5,8 @@ Major difference is this game is implemented with accelerometers as gesture dete
 instead of swiping you have to moving the device to activate blocks.
 
 Have fun with this game!
+
+# How to start:
+1. Clone the file to a local repo
+2. Open with Android studio with SDK 19+
+3. Start the simulator and enjoy!
